@@ -8,8 +8,19 @@ export class Tool{
 
 	constructor(canvas: HTMLCanvasElement){
 		this.canvas = canvas;
-		this.ctx = canvas?.getContext(CONTEXT_ID) || null
+		this.ctx = canvas.getContext(CONTEXT_ID)
 		this.removeListners()
+	}
+
+	set color(color: string){
+		console.log(this.ctx)
+		this.ctx!.fillStyle = color
+		this.ctx!.strokeStyle = color
+	}
+
+	set width(width: number){
+		console.log(this.ctx)
+		this.ctx!.lineWidth = width
 	}
 
 	removeListners(){
