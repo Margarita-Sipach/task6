@@ -18,7 +18,7 @@ export const AppRouter = memo(() => {
                     path={path}
                     element={(
                         <Suspense fallback="Loading...">
-                            <div className="page-wrapper">{element}</div>
+                            {element}
                         </Suspense>
                     )}
                 />
