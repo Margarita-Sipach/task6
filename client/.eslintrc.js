@@ -40,6 +40,7 @@ module.exports = {
         'react-hooks/exhaustive-deps': 'error',
         'no-param-reassign': 'off',
         'no-undef': 'off',
+        'class-methods-use-this': 'off',
     },
     globals: {
         __IS_DEV__: true,

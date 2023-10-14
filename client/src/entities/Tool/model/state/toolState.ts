@@ -1,27 +1,24 @@
-import { Tool } from "entities/Tool/lib/ParentTool";
-import { makeAutoObservable } from "mobx";
+import { Tool } from 'entities/Tool/lib/ParentTool';
+import { makeAutoObservable } from 'mobx';
 
-class ToolState{
+class ToolState {
+    _tool: Tool | null = null;
 
-	_tool: Tool | null = null
+    constructor() {
+        makeAutoObservable(this);
+    }
 
-	constructor(){
-		makeAutoObservable(this)
-	}
+    setTool(tool: Tool) {
+        this._tool = tool;
+    }
 
-	setTool(tool: Tool){
-		this._tool = tool
-	}
+    setColor(color: string) {
+        if (this._tool) this._tool.color = color;
+    }
 
-	setColor(color: string){
-		console.log(color, this._tool)
-		if(this._tool) this._tool.color = color
-	}
-
-	setWidth(width: number){
-		console.log(width, this._tool)
-		if(this._tool) this._tool.width = width
-	}
+    setWidth(width: string | number) {
+        if (this._tool) this._tool.width = +width;
+    }
 }
 
-export default new ToolState()
+export default new ToolState();

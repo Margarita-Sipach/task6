@@ -1,3 +1,3 @@
-import toolState from "./model/state/toolState";
+import toolState from './model/state/toolState';
 
-export {toolState}
+export { toolState };

@@ -1,31 +1,38 @@
-const CONTEXT_ID = "2d"
+const CONTEXT_ID = '2d';
 
 type CtxType = CanvasRenderingContext2D | null
 
-export class Tool{
-	protected canvas: HTMLCanvasElement;
-	protected ctx: CtxType;
+export class Tool {
+    protected canvas: HTMLCanvasElement;
 
-	constructor(canvas: HTMLCanvasElement){
-		this.canvas = canvas;
-		this.ctx = canvas.getContext(CONTEXT_ID)
-		this.removeListners()
-	}
+    protected ctx: CtxType;
 
-	set color(color: string){
-		console.log(this.ctx)
-		this.ctx!.fillStyle = color
-		this.ctx!.strokeStyle = color
-	}
+    constructor(canvas: HTMLCanvasElement) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext(CONTEXT_ID);
+        this.removeListners();
+    }
 
-	set width(width: number){
-		console.log(this.ctx)
-		this.ctx!.lineWidth = width
-	}
+    set color(color: string) {
+		this.ctx!.fillStyle = color;
+		this.ctx!.strokeStyle = color;
+    }
 
-	removeListners(){
-		this.canvas.onmouseup = null
-		this.canvas.onmousedown = null
-		this.canvas.onmousemove = null
-	}
+    set width(width: number) {
+		this.ctx!.lineWidth = width;
+    }
+
+    removeListners() {
+        this.canvas.onmouseup = null;
+        this.canvas.onmousedown = null;
+        this.canvas.onmousemove = null;
+    }
+
+    getCurrentCoordinates(e: MouseEvent): [number, number] {
+        const target = e.target as HTMLElement;
+        return [
+            e.pageX - target.offsetLeft,
+            e.pageY - target.offsetTop,
+        ];
+    }
 }

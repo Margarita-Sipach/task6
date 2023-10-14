@@ -1,22 +1,21 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable } from 'mobx';
 
 export type CanvasType = null | HTMLCanvasElement
 
-class CanvasState{
+class CanvasState {
+    private _canvas: CanvasType = null;
 
-	private _canvas: CanvasType = null
+    constructor() {
+        makeAutoObservable(this);
+    }
 
-	constructor(){
-		makeAutoObservable(this)
-	}
+    get canvas() {
+        return this._canvas;
+    }
 
-	get canvas(){
-		return this._canvas
-	}
-
-	setCanvas(canvas: CanvasType){
-		this._canvas = canvas
-	}
+    setCanvas(canvas: CanvasType) {
+        this._canvas = canvas;
+    }
 }
 
-export default new CanvasState()
+export default new CanvasState();
