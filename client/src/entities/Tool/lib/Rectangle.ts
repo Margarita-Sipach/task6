@@ -1,3 +1,4 @@
+import { Methods, ToolTypes } from 'shared/ws/ws';
 import { Tool } from './ParentTool';
 
 export class Rectangle extends Tool {
@@ -9,8 +10,16 @@ export class Rectangle extends Tool {
 
     private _prevCanvas: string = '';
 
-    constructor(canvas: HTMLCanvasElement) {
-        super(canvas);
+    _width: number = 0;
+
+    _height: number = 0;
+
+    constructor(
+        canvas: HTMLCanvasElement,
+        ws: WebSocket,
+        id: string,
+    ) {
+        super(canvas, ws, id);
         this.addListners();
     }
 
@@ -22,20 +31,43 @@ export class Rectangle extends Tool {
 
     mouseUpHandler() {
         this._isMouseDown = false;
+        this.ws.send(JSON.stringify({
+            method: Methods.draw,
+            id: this.id,
+            figure: {
+                type: ToolTypes.rectangle,
+                coordinates: {
+                    x: this._startX,
+                    y: this._startY,
+                },
+                sizes: {
+                    width: this._width,
+                    height: this._height,
+                },
+            },
+        }));
+        this.ws.send(JSON.stringify({
+            method: Methods.draw,
+            id: this.id,
+            figure: {
+                type: ToolTypes.finish,
+            },
+        }));
     }
 
     mouseDownHandler(e: MouseEvent) {
         this._isMouseDown = true;
         this.ctx?.beginPath();
-        [this._startX, this._startY] = this.getCurrentCoordinates(e);
+        [this._startX, this._startY] = Object.values(this.getCurrentCoordinates(e));
         this._prevCanvas = this.canvas.toDataURL();
     }
 
     mouseMoveHandler(e: MouseEvent) {
         if (this._isMouseDown) {
-            const [currentX, currentY] = this.getCurrentCoordinates(e);
-            const [width, height] = [currentX - this._startX, currentY - this._startY];
-            this.draw(this._startX, this._startY, width, height);
+            const { x, y } = this.getCurrentCoordinates(e);
+            this._width = x - this._startX;
+            this._height = y - this._startY;
+            this.draw(this._startX, this._startY, this._width, this._height);
         }
     }
 
@@ -49,5 +81,14 @@ export class Rectangle extends Tool {
             this.ctx?.rect(x, y, width, height);
             this.ctx?.fill();
         };
+    }
+
+    static draw(
+        ctx: any,
+        { x, y }: {x: number, y: number},
+        { width, height }: {width: number, height: number},
+    ) {
+        ctx?.rect(x, y, width, height);
+        ctx?.fill();
     }
 }

@@ -7,9 +7,19 @@ export class Tool {
 
     protected ctx: CtxType;
 
-    constructor(canvas: HTMLCanvasElement) {
+    protected ws: WebSocket;
+
+    protected id: string;
+
+    constructor(
+        canvas: HTMLCanvasElement,
+        ws: WebSocket,
+        id: string,
+    ) {
         this.canvas = canvas;
         this.ctx = canvas.getContext(CONTEXT_ID);
+        this.ws = ws;
+        this.id = id;
         this.removeListners();
     }
 
@@ -28,11 +38,11 @@ export class Tool {
         this.canvas.onmousemove = null;
     }
 
-    getCurrentCoordinates(e: MouseEvent): [number, number] {
+    getCurrentCoordinates(e: MouseEvent): {x: number, y: number} {
         const target = e.target as HTMLElement;
-        return [
-            e.pageX - target.offsetLeft,
-            e.pageY - target.offsetTop,
-        ];
+        return {
+            x: e.pageX - target.offsetLeft,
+            y: e.pageY - target.offsetTop,
+        };
     }
 }

@@ -1,10 +1,15 @@
+import { ToolTypes, Methods } from 'shared/ws/ws';
 import { Tool } from './ParentTool';
 
 export class Brush extends Tool {
     private _isMouseDown: boolean = false;
 
-    constructor(canvas: HTMLCanvasElement) {
-        super(canvas);
+    constructor(
+        canvas: HTMLCanvasElement,
+        ws: WebSocket,
+        id: string,
+    ) {
+        super(canvas, ws, id);
         this.addListners();
     }
 
@@ -16,22 +21,40 @@ export class Brush extends Tool {
 
     mouseUpHandler() {
         this._isMouseDown = false;
+        this.ws.send(JSON.stringify({
+            method: Methods.draw,
+            id: this.id,
+            figure: {
+                type: ToolTypes.finish,
+            },
+        }));
     }
 
     mouseDownHandler(e: MouseEvent) {
         this._isMouseDown = true;
         this.ctx?.beginPath();
-        this.ctx?.moveTo(...this.getCurrentCoordinates(e));
+        const coordinates = Object.values(this.getCurrentCoordinates(e)) as [number, number];
+        this.ctx?.moveTo(...coordinates);
     }
 
     mouseMoveHandler(e: MouseEvent) {
         if (this._isMouseDown) {
-            this.draw(...this.getCurrentCoordinates(e));
+            this.ws.send(JSON.stringify({
+                method: Methods.draw,
+                id: this.id,
+                figure: {
+                    type: ToolTypes.brush,
+                    coordinates: this.getCurrentCoordinates(e),
+                },
+            }));
         }
     }
 
-    draw(x: number, y: number) {
-        this.ctx?.lineTo(x, y);
-        this.ctx?.stroke();
+    static draw(
+        ctx: CanvasRenderingContext2D,
+        { x, y }: {x: number, y: number},
+    ) {
+        ctx?.lineTo(x, y);
+        ctx?.stroke();
     }
 }
