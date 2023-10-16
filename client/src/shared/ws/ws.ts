@@ -9,8 +9,10 @@ export enum ToolTypes {
 	finish = 'finish'
 }
 
+export type Color = string | CanvasGradient | CanvasPattern;
+
 export interface FigureParams{
-	color: any;
+	color: Color;
 	lineWidth: number
 	coordinates: {
 		x: number,
@@ -21,3 +23,5 @@ export interface FigureParams{
 		height: number
 	}
 }
+
+export type TwoElementArr = [number, number]

@@ -1,8 +1,8 @@
-import { Tool } from 'entities/Tool/lib/ParentTool';
+import { PaintTool } from 'entities/Tool';
 import { makeAutoObservable } from 'mobx';
 
 class ToolState {
-    _tool: Tool | null = null;
+    _tool: PaintTool | null = null;
 
     _color: string = '';
 
@@ -12,7 +12,7 @@ class ToolState {
         makeAutoObservable(this);
     }
 
-    setTool(tool: Tool) {
+    setTool(tool: PaintTool) {
         this._tool = tool;
         this._tool.color = this._color;
         this._tool.lineWidth = this._width;

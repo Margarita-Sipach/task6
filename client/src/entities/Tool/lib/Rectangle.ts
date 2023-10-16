@@ -1,9 +1,7 @@
-import { FigureParams, Methods, ToolTypes } from 'shared/ws/ws';
-import { Tool } from './ParentTool';
+import { FigureParams, ToolTypes, TwoElementArr } from 'shared/ws/ws';
+import { PaintTool } from './PaintTool';
 
-export class Rectangle extends Tool {
-    private _isMouseDown: boolean = false;
-
+export class Rectangle extends PaintTool {
     private _startX: number = 0;
 
     private _startY: number = 0;
@@ -14,46 +12,29 @@ export class Rectangle extends Tool {
 
     _height: number = 0;
 
-    constructor(
-        canvas: HTMLCanvasElement,
-        ws: WebSocket,
-        id: string,
-    ) {
-        super(canvas, ws, id);
-        this.addListners();
-    }
-
-    addListners() {
-        this.canvas.onmouseup = this.mouseUpHandler.bind(this);
-        this.canvas.onmousedown = this.mouseDownHandler.bind(this);
-        this.canvas.onmousemove = this.mouseMoveHandler.bind(this);
-    }
-
-    mouseUpHandler() {
+    mouseUpHandler(e: MouseEvent) {
         this._isMouseDown = false;
-        this.ws.send(JSON.stringify({
-            method: Methods.draw,
-            id: this.id,
-            figure: {
-                type: ToolTypes.rectangle,
-                color: this._color,
-                width: this._lineWidth,
-                coordinates: {
-                    x: this._startX,
-                    y: this._startY,
-                },
-                sizes: {
-                    width: this._width,
-                    height: this._height,
-                },
-            },
-        }));
+        this.sendDrawMessage(e);
         this.finishDraw();
+    }
+
+    generateExtraParams() {
+        return {
+            type: ToolTypes.rectangle,
+            coordinates: {
+                x: this._startX,
+                y: this._startY,
+            },
+            sizes: {
+                width: this._width,
+                height: this._height,
+            },
+        };
     }
 
     mouseDownHandler(e: MouseEvent) {
         this._isMouseDown = true;
-        this.initToolProps();
+        this.initToolParams();
         [this._startX, this._startY] = Object.values(this.getCurrentCoordinates(e));
         this._prevCanvas = this.canvas.toDataURL();
     }
@@ -67,12 +48,16 @@ export class Rectangle extends Tool {
         }
     }
 
+    get canvasSizes(): TwoElementArr {
+        return [this.canvas.width, this.canvas.height];
+    }
+
     draw(x: number, y: number, width: number, height: number) {
         const img = new Image();
         img.src = this._prevCanvas;
         img.onload = () => {
-            this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx?.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+            this.ctx?.clearRect(0, 0, ...this.canvasSizes);
+            this.ctx?.drawImage(img, 0, 0, ...this.canvasSizes);
             this.ctx?.beginPath();
             this.ctx?.rect(x, y, width, height);
             this.ctx?.fill();
@@ -80,13 +65,16 @@ export class Rectangle extends Tool {
     }
 
     static draw(
-        ctx: any,
+        ctx: CanvasRenderingContext2D,
         {
             coordinates, sizes, color, lineWidth,
         }: FigureParams,
     ) {
-        Rectangle.initToolProps(ctx, color, lineWidth);
-        ctx?.rect(...Object.values(coordinates), ...Object.values(sizes!));
+        Rectangle.initToolParams(ctx, color, lineWidth);
+        ctx?.rect(
+            ...Object.values(coordinates) as TwoElementArr,
+            ...Object.values(sizes!) as TwoElementArr,
+        );
         ctx?.fill();
     }
 }
