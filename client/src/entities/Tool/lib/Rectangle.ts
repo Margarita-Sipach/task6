@@ -1,4 +1,4 @@
-import { Methods, ToolTypes } from 'shared/ws/ws';
+import { FigureParams, Methods, ToolTypes } from 'shared/ws/ws';
 import { Tool } from './ParentTool';
 
 export class Rectangle extends Tool {
@@ -36,6 +36,8 @@ export class Rectangle extends Tool {
             id: this.id,
             figure: {
                 type: ToolTypes.rectangle,
+                color: this._color,
+                width: this._lineWidth,
                 coordinates: {
                     x: this._startX,
                     y: this._startY,
@@ -46,18 +48,12 @@ export class Rectangle extends Tool {
                 },
             },
         }));
-        this.ws.send(JSON.stringify({
-            method: Methods.draw,
-            id: this.id,
-            figure: {
-                type: ToolTypes.finish,
-            },
-        }));
+        this.finishDraw();
     }
 
     mouseDownHandler(e: MouseEvent) {
         this._isMouseDown = true;
-        this.ctx?.beginPath();
+        this.initToolProps();
         [this._startX, this._startY] = Object.values(this.getCurrentCoordinates(e));
         this._prevCanvas = this.canvas.toDataURL();
     }
@@ -85,10 +81,12 @@ export class Rectangle extends Tool {
 
     static draw(
         ctx: any,
-        { x, y }: {x: number, y: number},
-        { width, height }: {width: number, height: number},
+        {
+            coordinates, sizes, color, lineWidth,
+        }: FigureParams,
     ) {
-        ctx?.rect(x, y, width, height);
+        Rectangle.initToolProps(ctx, color, lineWidth);
+        ctx?.rect(...Object.values(coordinates), ...Object.values(sizes!));
         ctx?.fill();
     }
 }

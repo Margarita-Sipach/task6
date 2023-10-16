@@ -8,3 +8,16 @@ export enum ToolTypes {
 	rectangle = 'rectangle',
 	finish = 'finish'
 }
+
+export interface FigureParams{
+	color: any;
+	lineWidth: number
+	coordinates: {
+		x: number,
+		y: number
+	},
+	sizes?: {
+		width: number,
+		height: number
+	}
+}

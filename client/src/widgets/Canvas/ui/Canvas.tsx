@@ -1,8 +1,9 @@
 import { FC, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Methods, ToolTypes } from 'shared/ws/ws';
+import { FigureParams, Methods, ToolTypes } from 'shared/ws/ws';
 import { Brush } from 'entities/Tool/lib/Brush';
 import { Rectangle } from 'entities/Tool/lib/Rectangle';
+import { Tool } from 'entities/Tool/lib/ParentTool';
 import canvasState from '../model/state/canvasState';
 import cls from './Canvas.module.scss';
 
@@ -10,24 +11,27 @@ interface CanvasProps {
 	id: string
 }
 
+interface Figure extends FigureParams{
+	type: ToolTypes
+}
+
+const Tools = {
+    [ToolTypes.brush]: Brush,
+    [ToolTypes.rectangle]: Rectangle,
+};
+
 export const Canvas: FC<CanvasProps> = observer(({ id }) => {
     const canvasRef = useRef(null);
 
     const drawHandler = (params: any) => {
         if (canvasState.ctx) {
             const { figure } = params;
-            const { coordinates } = figure;
-            switch (figure.type) {
-            case ToolTypes.brush: Brush.draw(canvasState.ctx, coordinates);
-                break;
-            case ToolTypes.rectangle: {
-                const { sizes } = figure;
-                Rectangle.draw(canvasState.ctx, coordinates, sizes);
-            }
-                break;
+            const { type, ...figureParams }: Figure = figure;
+            switch (type) {
             case ToolTypes.finish: canvasState.ctx.beginPath();
                 break;
-            default: break;
+            default: (Tools[type] as typeof Tool).draw(canvasState.ctx, figureParams);
+                break;
             }
         }
     };
