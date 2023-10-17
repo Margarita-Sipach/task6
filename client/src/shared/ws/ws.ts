@@ -1,7 +1,8 @@
 export enum Methods {
 	connect = 'connect',
 	draw = 'draw',
-	getIds = 'getIds'
+	getIds = 'getIds',
+	setImg = 'setImg'
 }
 
 export enum ToolTypes {

@@ -6,6 +6,8 @@ const CONTEXT_ID = '2d';
 const DEFAULT_COLOR = '#000';
 const DEFAULT_LINE_WIDTH = 1;
 
+const DATA_IMG_STR = 'data:image/png;base64,';
+
 export class PaintTool {
     protected canvas: HTMLCanvasElement;
 
@@ -15,9 +17,9 @@ export class PaintTool {
 
     protected id: string;
 
-    protected _color: Color;
+    static color: Color;
 
-    protected _lineWidth: number;
+    static lineWidth: number;
 
     protected _isMouseDown: boolean = false;
 
@@ -28,8 +30,8 @@ export class PaintTool {
     ) {
         this.canvas = canvas;
         this.ctx = canvas.getContext(CONTEXT_ID)!;
-        this._color = this.ctx?.fillStyle || DEFAULT_COLOR;
-        this._lineWidth = this.ctx?.lineWidth || DEFAULT_LINE_WIDTH;
+        PaintTool.color = this.ctx?.fillStyle || DEFAULT_COLOR;
+        PaintTool.lineWidth = this.ctx?.lineWidth || DEFAULT_LINE_WIDTH;
         this.ws = ws;
         this.id = id;
         this.removeListners();
@@ -48,21 +50,13 @@ export class PaintTool {
 
     mouseMoveHandler(e?: MouseEvent) {}
 
-    set color(color: string) {
-        this._color = color;
-    }
-
-    set lineWidth(lineWidth: number) {
-        this._lineWidth = lineWidth;
-    }
-
     sendDrawMessage(e: MouseEvent) {
         this.ws.send(JSON.stringify({
             method: Methods.draw,
             id: this.id,
             figure: {
-                color: this._color,
-                lineWidth: this._lineWidth,
+                color: PaintTool.color,
+                lineWidth: PaintTool.lineWidth,
                 ...this.generateExtraParams(e),
             },
         }));
@@ -73,15 +67,19 @@ export class PaintTool {
     }
 
     initToolParams() {
-        PaintTool.initToolParams(this.ctx!, this.color, this.lineWidth);
+        PaintTool.initToolParams(this.ctx!, PaintTool.color, PaintTool.lineWidth);
         this.ctx?.beginPath();
     }
 
     getCanvasURL() {
-        return { img: this.canvas.toDataURL().replace('data:image/png;base64,', '') };
+        return { img: this.canvas.toDataURL().replace(DATA_IMG_STR, '') };
     }
 
-    static initToolParams(ctx: CanvasRenderingContext2D, color: Color, lineWidth: number) {
+    static initToolParams(
+        ctx: CanvasRenderingContext2D,
+        color: Color,
+        lineWidth: number,
+    ) {
 		ctx!.fillStyle = color;
 		ctx!.strokeStyle = color;
 		ctx!.lineWidth = lineWidth;
@@ -105,20 +103,28 @@ export class PaintTool {
         this.ws.send(JSON.stringify({
             method: Methods.draw,
             id: this.id,
-            img: this.canvas.toDataURL().replace('data:image/png;base64,', ''),
+            img: this.canvas.toDataURL().replace(DATA_IMG_STR, ''),
             figure: {
                 type: ToolTypes.finish,
             },
         }));
     }
 
-    // sendCanvasImg(){
-    // 	this.ws.send(JSON.stringify({
-    // 		method: 'setImg',
-    // 		id: this.id,
-    // 		img: this.canvas.toDataURL().replace('data: image/png;base64', '')
-    // 	}))
-    // }
+    get canvasSizes(): TwoElementArr {
+        return [this.canvas.width, this.canvas.height];
+    }
+
+    setCanvasImg(imgName: string) {
+        const img = new Image();
+        img.src = DATA_IMG_STR + imgName;
+        img.onload = () => {
+            console.log(this.canvas, this.canvasSizes);
+            if (this.canvas) {
+                this.ctx?.clearRect(0, 0, ...this.canvasSizes);
+                this.ctx?.drawImage(img, 0, 0, ...this.canvasSizes);
+            }
+        };
+    }
 
     static draw(ctx: CanvasRenderingContext2D, params: object) {}
 }

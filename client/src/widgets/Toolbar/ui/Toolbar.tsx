@@ -1,8 +1,9 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import {
     Brush, PaintTool, Rectangle, toolState,
 } from 'entities/Tool';
 import { canvasState } from 'widgets/Canvas';
+import { Button } from 'shared/ui/Button';
 import cls from './Toolbar.module.scss';
 
 interface ToolbarProps {
@@ -19,20 +20,22 @@ export const Toolbar: FC<ToolbarProps> = () => {
         }
     };
 
+    useEffect(() => {
+        setTool(Brush);
+    }, []);
+
     return (
         <div className={`bar ${cls.Toolbar}`}>
-            <button
-                type="button"
+            <Button
                 onClick={() => setTool(Brush)}
             >
-                Brash
-            </button>
-            <button
-                type="button"
+                Brush
+            </Button>
+            <Button
                 onClick={() => setTool(Rectangle)}
             >
                 Rectangle
-            </button>
+            </Button>
         </div>
     );
 };

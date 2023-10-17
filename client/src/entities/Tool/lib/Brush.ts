@@ -23,7 +23,6 @@ export class Brush extends PaintTool {
     generateExtraParams(e: MouseEvent): {} {
         return {
             type: ToolTypes.brush,
-            lineWidth: this._lineWidth,
             coordinates: this.getCurrentCoordinates(e),
         };
     }

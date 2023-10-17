@@ -48,10 +48,6 @@ export class Rectangle extends PaintTool {
         }
     }
 
-    get canvasSizes(): TwoElementArr {
-        return [this.canvas.width, this.canvas.height];
-    }
-
     draw(x: number, y: number, width: number, height: number) {
         const img = new Image();
         img.src = this._prevCanvas;

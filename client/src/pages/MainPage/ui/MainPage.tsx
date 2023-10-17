@@ -3,7 +3,6 @@ import { Link, generatePath, useNavigate } from 'react-router-dom';
 import { RoutePath } from 'shared/config/routeConfig/routeConfig';
 import { Button, ButtonTheme } from 'shared/ui/Button';
 import { Input } from 'shared/ui/Input/Input';
-import { canvasState } from 'widgets/Canvas';
 import { Methods } from 'shared/ws/ws';
 import cls from './MainPage.module.scss';
 
@@ -16,13 +15,12 @@ const MainPage = () => {
     const addBoard = () => {
         const isIdUniq = currentIds.includes(currentId);
         if (!currentId.length || isIdUniq) return alert('Wrong board name');
-        const path = generatePath(RoutePath.paint, { id: currentId });
-        navigate(path);
+        const path = generatePath(`${RoutePath.paint}/:id`, { id: currentId });
+        return navigate(path);
     };
 
     useEffect(() => {
-        const { ws } = canvasState;
-
+        const ws = new WebSocket(__API__.replace('http', 'ws'));
         ws.onopen = () => {
             ws.send(JSON.stringify({ method: Methods.getIds }));
             ws.onmessage = (msg) => {

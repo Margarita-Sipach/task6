@@ -1,5 +1,5 @@
 import { ChangeEvent, FC } from 'react';
-import { toolState } from 'entities/Tool';
+import { PaintTool, toolState } from 'entities/Tool';
 import cls from './Settingbar.module.scss';
 
 interface SettingbarProps {
@@ -8,9 +8,9 @@ interface SettingbarProps {
 export const Settingbar: FC<SettingbarProps> = () => {
     const setToolProperty = (
         e: ChangeEvent<HTMLInputElement>,
-        setter: 'setWidth' | 'setColor',
+        setter: 'lineWidth' | 'color',
     ) => {
-        toolState[setter](e.target.value);
+        PaintTool[setter] = e.target.value as any;
     };
 
     return (
@@ -20,11 +20,11 @@ export const Settingbar: FC<SettingbarProps> = () => {
                     type="number"
                     min={1}
                     max={50}
-                    onChange={(e) => setToolProperty(e, 'setWidth')}
+                    onChange={(e) => setToolProperty(e, 'lineWidth')}
                 />
                 <input
                     type="color"
-                    onChange={(e) => setToolProperty(e, 'setColor')}
+                    onChange={(e) => setToolProperty(e, 'color')}
                 />
             </div>
         </div>

@@ -8,7 +8,7 @@ export enum ButtonTheme{
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{
 	onClick: () => void
-	theme: ButtonTheme
+	theme?: ButtonTheme
 }
 
 export const Button = (props: ButtonProps) => {

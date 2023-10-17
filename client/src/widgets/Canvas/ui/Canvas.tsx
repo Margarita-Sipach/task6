@@ -1,7 +1,9 @@
 import { FC, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { FigureParams, Methods, ToolTypes } from 'shared/ws/ws';
-import { Brush, PaintTool, Rectangle } from 'entities/Tool';
+import {
+    Brush, PaintTool, Rectangle, toolState,
+} from 'entities/Tool';
 import canvasState from '../model/state/canvasState';
 import cls from './Canvas.module.scss';
 
@@ -23,12 +25,12 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
 
     const drawHandler = (params: {type: ToolTypes, figure: Figure}) => {
         if (canvasState.ctx) {
-            const { figure } = params;
-            const { type, ...figureParams }: Figure = figure;
+            const { type, ...figureParams }: Figure = params.figure;
             switch (type) {
             case ToolTypes.finish: canvasState.ctx.beginPath();
                 break;
-            default: (Tools[type] as typeof PaintTool).draw(canvasState.ctx, figureParams);
+            default: (Tools[type] as typeof PaintTool)
+                .draw(canvasState.ctx, figureParams);
                 break;
             }
         }
@@ -40,10 +42,9 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
             canvasState.setCanvas(canvas);
         }
 
-        canvasState.setWs(new WebSocket(__API__.replace('http', 'ws')));
-        const { ws } = canvasState;
         canvasState.setSessionId(id);
 
+        const ws = new WebSocket(__API__.replace('http', 'ws'));
         ws.onopen = () => {
             ws.send(JSON.stringify({
                 id,
@@ -52,20 +53,16 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
             ws.onmessage = (msg) => {
                 const { method, ...msgParams } = JSON.parse(msg.data);
                 switch (method) {
-                case Methods.connect: console.log(msgParams.msg);
+                case Methods.connect: alert('new user');
                     break;
                 case Methods.draw: drawHandler(msgParams);
                     break;
-                case 'setImg': {
-                    console.log('setImg');
-                    const img = new Image();
-                    img.src = msgParams.img;
-                    img.onload = () => {
-                        if (canvasState.canvas) {
-                            canvasState.ctx?.clearRect(0, 0, canvasState.canvas.width, canvasState.canvas.height);
-                            canvasState.ctx?.drawImage(img, 0, 0, canvasState.canvas.width, canvasState.canvas.height);
-                        }
-                    };
+                case Methods.setImg: {
+                    new PaintTool(
+						canvasState.canvas!,
+						canvasState.ws,
+						canvasState.sessionId,
+                    ).setCanvasImg(msgParams.img);
                 }
                     break;
                 default: break;
