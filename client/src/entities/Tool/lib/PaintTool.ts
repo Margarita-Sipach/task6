@@ -77,6 +77,10 @@ export class PaintTool {
         this.ctx?.beginPath();
     }
 
+    getCanvasURL() {
+        return { img: this.canvas.toDataURL().replace('data:image/png;base64,', '') };
+    }
+
     static initToolParams(ctx: CanvasRenderingContext2D, color: Color, lineWidth: number) {
 		ctx!.fillStyle = color;
 		ctx!.strokeStyle = color;
@@ -101,11 +105,20 @@ export class PaintTool {
         this.ws.send(JSON.stringify({
             method: Methods.draw,
             id: this.id,
+            img: this.canvas.toDataURL().replace('data:image/png;base64,', ''),
             figure: {
                 type: ToolTypes.finish,
             },
         }));
     }
+
+    // sendCanvasImg(){
+    // 	this.ws.send(JSON.stringify({
+    // 		method: 'setImg',
+    // 		id: this.id,
+    // 		img: this.canvas.toDataURL().replace('data: image/png;base64', '')
+    // 	}))
+    // }
 
     static draw(ctx: CanvasRenderingContext2D, params: object) {}
 }

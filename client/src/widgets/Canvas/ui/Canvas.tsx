@@ -56,6 +56,18 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
                     break;
                 case Methods.draw: drawHandler(msgParams);
                     break;
+                case 'setImg': {
+                    console.log('setImg');
+                    const img = new Image();
+                    img.src = msgParams.img;
+                    img.onload = () => {
+                        if (canvasState.canvas) {
+                            canvasState.ctx?.clearRect(0, 0, canvasState.canvas.width, canvasState.canvas.height);
+                            canvasState.ctx?.drawImage(img, 0, 0, canvasState.canvas.width, canvasState.canvas.height);
+                        }
+                    };
+                }
+                    break;
                 default: break;
                 }
             };

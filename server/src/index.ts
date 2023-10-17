@@ -1,7 +1,11 @@
 import express, { Request, Response } from 'express'
 import expressWs from 'express-ws'
+import fs from 'fs'
+import path from 'path'
 
 import cors from 'cors'
+import { Methods } from './type/methods'
+import { type ConnectMsg, type DrawMsg, type GetIdsMsg, type Msg } from './type/message'
 
 const appBase = express()
 const wsInstance = expressWs(appBase)
@@ -15,46 +19,6 @@ const PORT = process.env.PORT ?? 8000
 
 const ids = new Set<string>()
 
-interface AppWebSocket extends WebSocket {
-  id: string
-}
-
-interface MsgParent {
-  id: string
-}
-
-interface ConnectMsg extends MsgParent {
-  method: Methods.connect
-}
-
-interface DrawMsg extends MsgParent {
-  method: Methods.draw
-  figure: {
-    type: string
-    coordinates?: {
-      x: number
-      y: number
-    }
-    sizes?: {
-      width: number
-      height: number
-    }
-  }
-}
-
-interface GetIdsMsg {
-  method: Methods.getIds
-  ids: string[]
-}
-
-type Msg = DrawMsg | ConnectMsg | GetIdsMsg
-
-enum Methods {
-  connect = 'connect',
-  draw = 'draw',
-  getIds = 'getIds'
-}
-
 const sendIds = () => {
   broadcastConnectAll({ method: Methods.getIds, ids: [...ids] })
 }
@@ -64,6 +28,7 @@ const connect = (ws: any, msg: ConnectMsg) => {
   ids.add(msg.id)
   broadcastConnect(msg)
   sendIds()
+  sendImg(msg.id)
   return msg.id
 }
 
@@ -79,8 +44,26 @@ const broadcastConnectAll = (msg: Msg) => {
   })
 }
 
+const setImg = (msg: DrawMsg) => {
+  const data = msg.img
+  fs.writeFileSync(path.resolve(__dirname, 'images', `${msg.id}.jpg`), data, 'base64')
+}
+
+const sendImg = (id: string) => {
+  const img = 'data:image/png;base64,' + fs.readFileSync(path.resolve(__dirname, 'images', `${id}.jpg`)).toString('base64')
+  broadcastConnect({
+    method: Methods.setImg,
+    id,
+    img
+  })
+}
+
 const draw = (msg: DrawMsg) => {
   broadcastConnect(msg)
+  if (msg.img) {
+    setImg(msg)
+    sendImg(msg.id)
+  }
 }
 
 app.ws('/', (ws, req) => {
