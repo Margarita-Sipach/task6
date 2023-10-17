@@ -1,6 +1,6 @@
 export enum Methods {
-  connect = 'connect',
-  draw = 'draw',
-  getIds = 'getIds',
-  setImg = 'setImg'
+    connect = 'connect',
+    draw = 'draw',
+    getIds = 'getIds',
+    setImg = 'setImg'
 }

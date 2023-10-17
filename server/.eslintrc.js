@@ -30,5 +30,7 @@ module.exports = {
 		"@typescript-eslint/no-misused-promises": "off",
 		"@typescript-eslint/strict-boolean-expressions": "warn",
 		'max-len': ['error', { ignoreComments: true, code: 90 }],
+		indent: ['warn', 4],
+		"@typescript-eslint/indent": ['warn', 4],
     }
 }
