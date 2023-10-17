@@ -1,4 +1,6 @@
-import { Color, Methods, ToolTypes, TwoElementArr } from 'shared/ws/ws';
+import {
+    Color, Methods, ToolTypes, TwoElementArr,
+} from 'shared/ws/ws';
 
 const CONTEXT_ID = '2d';
 const DEFAULT_COLOR = '#000';

@@ -1,6 +1,7 @@
 export enum Methods {
 	connect = 'connect',
 	draw = 'draw',
+	getIds = 'getIds'
 }
 
 export enum ToolTypes {

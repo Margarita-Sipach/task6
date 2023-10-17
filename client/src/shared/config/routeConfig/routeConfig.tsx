@@ -17,7 +17,7 @@ export enum AppRoutes {
 
 export const RoutePath: Record<AppRoutes, string> = {
     [AppRoutes.MAIN]: '/',
-    [AppRoutes.PAINT]: '/paint/:id',
+    [AppRoutes.PAINT]: '/paint',
     [AppRoutes.NOT_FOUND]: '*',
 };
 
@@ -27,7 +27,7 @@ export const routeConfig: Record<AppRoutes, AppRoutesProps> = {
         element: <MainPage />,
     },
     [AppRoutes.PAINT]: {
-        path: RoutePath.paint,
+        path: `${RoutePath.paint}/:id`,
         element: <PaintPage />,
     },
     [AppRoutes.NOT_FOUND]: {
