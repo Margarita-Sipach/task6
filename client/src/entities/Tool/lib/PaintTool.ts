@@ -110,21 +110,5 @@ export class PaintTool {
         }));
     }
 
-    get canvasSizes(): TwoElementArr {
-        return [this.canvas.width, this.canvas.height];
-    }
-
-    setCanvasImg(imgName: string) {
-        const img = new Image();
-        img.src = DATA_IMG_STR + imgName;
-        img.onload = () => {
-            console.log(this.canvas, this.canvasSizes);
-            if (this.canvas) {
-                this.ctx?.clearRect(0, 0, ...this.canvasSizes);
-                this.ctx?.drawImage(img, 0, 0, ...this.canvasSizes);
-            }
-        };
-    }
-
     static draw(ctx: CanvasRenderingContext2D, params: object) {}
 }

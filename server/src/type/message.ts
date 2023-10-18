@@ -25,9 +25,9 @@ export interface DrawMsg extends MsgParent {
     }
 }
 
-export interface GetIdsMsg {
-    method: Methods.getIds
-    ids: string[]
+export interface GetBoardsMsg {
+    method: Methods.getBoards
+    boards: Record<string, string>
 }
 
 export interface SetImgMsg extends MsgParent {
@@ -35,4 +35,4 @@ export interface SetImgMsg extends MsgParent {
     img: string
 }
 
-export type Msg = DrawMsg | ConnectMsg | GetIdsMsg | SetImgMsg
+export type Msg = DrawMsg | ConnectMsg | GetBoardsMsg | SetImgMsg

@@ -1,4 +1,5 @@
 import { FigureParams, ToolTypes, TwoElementArr } from 'shared/ws/ws';
+import { canvasState } from 'widgets/Canvas';
 import { PaintTool } from './PaintTool';
 
 export class Rectangle extends PaintTool {
@@ -49,15 +50,11 @@ export class Rectangle extends PaintTool {
     }
 
     draw(x: number, y: number, width: number, height: number) {
-        const img = new Image();
-        img.src = this._prevCanvas;
-        img.onload = () => {
-            this.ctx?.clearRect(0, 0, ...this.canvasSizes);
-            this.ctx?.drawImage(img, 0, 0, ...this.canvasSizes);
-            this.ctx?.beginPath();
-            this.ctx?.rect(x, y, width, height);
-            this.ctx?.fill();
-        };
+        canvasState.setCanvasImg(this._prevCanvas, (ctx) => {
+            ctx?.beginPath();
+            ctx?.rect(x, y, width, height);
+            ctx?.fill();
+        });
     }
 
     static draw(

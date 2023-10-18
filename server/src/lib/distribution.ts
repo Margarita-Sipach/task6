@@ -1,5 +1,5 @@
 import { aWss } from '..'
-import { type Msg } from '../type/message'
+import { SetImgMsg, type Msg, type GetBoardsMsg } from '../type/message'
 
 export const distribution = {
     allClients: (msg: Msg) => {
@@ -7,7 +7,7 @@ export const distribution = {
             client.send(JSON.stringify(msg))
         })
     },
-    client: (msg: Msg, id = msg.id) => {
+    client: (msg: Exclude<Msg, GetBoardsMsg>, id = msg.id) => {
         aWss.clients.forEach((client: any) => {
             if (client.id === id) client.send(JSON.stringify(msg))
         })

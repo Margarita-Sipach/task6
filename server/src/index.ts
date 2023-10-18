@@ -5,15 +5,13 @@ import { Methods } from './type/methods'
 import { type Msg } from './type/message'
 import { controller } from './controllers/controller'
 import path from 'path'
+import fs from 'fs'
 
 const appBase = express()
 const wsInstance = expressWs(appBase)
 export const aWss = wsInstance.getWss()
 const { app } = wsInstance
-
-export const getImgPath = (id: string) => {
-    return path.resolve(__dirname, 'images', `${id}.jpg`)
-}
+const ENCODING = 'base64'
 
 app.use(cors())
 app.use(express.json())
@@ -29,7 +27,7 @@ app.ws('/', (ws, req) => {
                 break
             case Methods.draw: controller.draw(msg)
                 break
-            case Methods.getIds: controller.sendIds()
+            case Methods.getBoards: controller.sendBoards()
                 break
             default:
                 break

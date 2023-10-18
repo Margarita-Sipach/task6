@@ -1,36 +1,34 @@
-import { getImgPath } from '..'
 import { distribution } from '../lib/distribution'
+import { image } from '../lib/image'
 import { type ConnectMsg, type DrawMsg } from '../type/message'
 import { Methods } from '../type/methods'
-import fs from 'fs'
-
-const ENCODING = 'base64'
 
 class Controller {
-    ids = new Set<string>()
+    ids = image.getBoardsIds()
 
-    sendIds () {
-        distribution.allClients({ method: Methods.getIds, ids: [...this.ids] })
+    sendBoards () {
+        const boards = image.getBoards()
+        distribution.allClients({ method: Methods.getBoards, boards })
     }
 
     connect (ws: any, msg: ConnectMsg) {
         ws.id = msg.id
         distribution.client(msg)
-        if (!this.ids.has(msg.id)) {
-            this.ids.add(msg.id)
-            this.sendIds()
+        if (!this.ids.includes(msg.id)) {
+            this.ids.push(msg.id)
+            this.sendBoards()
+            image.setImg(msg.id, '')
         } else {
             this.sendImg(msg.id)
         }
     }
 
     setImg (msg: DrawMsg) {
-        const data = msg.img
-        fs.writeFileSync(getImgPath(msg.id), data, ENCODING)
+        image.setImg(msg.id, msg.img)
     }
 
     sendImg (id: string) {
-        const img = fs.readFileSync(getImgPath(id)).toString(ENCODING)
+        const img = image.getImg(id)
         distribution.client({
             method: Methods.setImg,
             id,

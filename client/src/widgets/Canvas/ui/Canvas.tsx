@@ -44,7 +44,7 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
 
         canvasState.setSessionId(id);
 
-        const ws = new WebSocket(__API__.replace('http', 'ws'));
+        const ws = new WebSocket(__WS__);
         ws.onopen = () => {
             ws.send(JSON.stringify({
                 id,
@@ -58,11 +58,7 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
                 case Methods.draw: drawHandler(msgParams);
                     break;
                 case Methods.setImg: {
-                    new PaintTool(
-						canvasState.canvas!,
-						canvasState.ws,
-						canvasState.sessionId,
-                    ).setCanvasImg(msgParams.img);
+                    canvasState.setCanvasImg(msgParams.img);
                 }
                     break;
                 default: break;
