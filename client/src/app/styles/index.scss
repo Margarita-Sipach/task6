@@ -1,7 +1,5 @@
 @import "reset";
 @import "variables/global";
-@import "themes/dark";
-@import "themes/light";
 
 body {
     font: var(--font-m);
@@ -9,9 +7,9 @@ body {
 }
 
 #root {
-    height: 100vh;
-    background: var(--bg-color);
+    min-height: 100vh;
     display: flex;
+    background: var(--bg-color);
 }
 
 .content-page {
@@ -21,6 +19,7 @@ body {
 .page-wrapper {
     flex-grow: 1;
     padding: 20px;
+    height: auto;
 }
 
 .bar {
@@ -29,4 +28,10 @@ body {
     padding: 0 10px;
     align-items: center;
     border: 2px solid var(--primary-color);
+}
+
+input,
+button {
+    border-radius: 5px;
+    padding: 10px 15px;
 }
