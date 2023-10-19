@@ -36,22 +36,21 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
         }
     };
 
-    const connectHandler = useCallback(() => alert('new user'), []);
-
-    const sendBoardsHandler = useCallback(({ boards }: any) => {
-        const img = DATA_IMG_STR + boards[id];
-        canvasState.setCanvasImg(img);
-    }, [id]);
+    const connectHandler = useCallback(({ img }) => {
+        canvasState.setCanvasImg(DATA_IMG_STR + img);
+        setTimeout(() => alert('new user'), 500);
+    }, []);
 
     const msgHandler = useCallback((msg: { data: string; }) => {
         const { method, ...msgParams } = JSON.parse(msg.data);
+
+        canvasState.updateURL();
         switch (method) {
-        case Methods.connect: return connectHandler();
+        case Methods.connect: return connectHandler(msgParams);
         case Methods.draw: return drawHandler(msgParams);
-        case Methods.sendBoards: return sendBoardsHandler(msgParams);
         default:
         }
-    }, [connectHandler, sendBoardsHandler]);
+    }, [connectHandler]);
 
     const canvasHandler = useCallback(() => {
         const canvas = canvasRef.current;
@@ -68,7 +67,7 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
         ws.onopen = () => {
             ws.send(JSON.stringify({
                 id,
-                img: canvasState.canvasURL,
+                img: canvasState.url.replace(DATA_IMG_STR, ''),
                 method: Methods.connect,
             }));
             ws.onmessage = msgHandler;

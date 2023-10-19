@@ -1,0 +1,10 @@
+.screen {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    height: 100px;
+    width: 170px;
+    object-fit: cover;
+    z-index: 3;
+    background: var(--light-color);
+}

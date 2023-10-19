@@ -10,9 +10,11 @@ class CanvasState {
 
     private _ws: WebSocket = new WebSocket(__WS__);
 
-    private _boards: {[id: string]: string} = {};
+    private _boards: { [id: string]: string } = {};
 
     private _sessionId: string = '';
+
+    private _url: string = '';
 
     constructor() {
         makeAutoObservable(this);
@@ -38,6 +40,10 @@ class CanvasState {
         return this._boards;
     }
 
+    get url() {
+        return this._url;
+    }
+
     get canvasSizes(): TwoElementArr {
         return [this._canvas!.width, this._canvas!.height];
     }
@@ -54,7 +60,7 @@ class CanvasState {
         this._canvas = canvas;
     }
 
-    setBoards(boards: {[id: string]: string}) {
+    setBoards(boards: { [id: string]: string }) {
         this._boards = boards;
     }
 
@@ -71,11 +77,12 @@ class CanvasState {
                 this.ctx?.drawImage(img, 0, 0, ...this.canvasSizes);
                 fn?.(this.ctx);
             }
+            this.updateURL();
         };
     }
 
-    get canvasURL() {
-        return this.canvas?.toDataURL().replace(DATA_IMG_STR, '');
+    updateURL() {
+        this._url = this.canvas?.toDataURL() || '';
     }
 }
 

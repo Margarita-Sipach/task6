@@ -6,13 +6,17 @@ import { Methods } from '../type/methods'
 class Controller {
     ids = image.getBoardsIds()
 
-    connect (ws: any, msg: ConnectMsg) {
-        ws.id = msg.id
-        if (!this.ids.includes(msg.id)) {
-            this.ids.push(msg.id)
-            image.setImg(msg.id, msg.img)
+    connect (ws: any, {method, id, img}: ConnectMsg) {
+        ws.id = id
+        if (!this.ids.includes(id)) {
+            this.ids.push(id)
+            image.setImg(id, img)
         }
-        distribution.client(msg)
+        distribution.client({
+			method,
+			id: id,
+			img: image.getImg(id)
+		})
         this.sendBoards()
     }
 
