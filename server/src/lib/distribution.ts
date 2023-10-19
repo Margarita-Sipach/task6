@@ -1,5 +1,5 @@
 import { aWss } from '..'
-import { SendBoardMsg, type Msg, SendBoardsMsg } from '../type/message'
+import { SendBoardMsg, type Msg, type SendBoardsMsg } from '../type/message'
 
 export const distribution = {
     allClients: (msg: Msg) => {

@@ -19,20 +19,20 @@ app.use(express.json())
 const PORT = process.env.PORT ?? 8000
 
 app.ws('/', (ws, req) => {
-	ws.on('message', (message: string) => {
-		const msg: Msg = JSON.parse(message)
+    ws.on('message', (message: string) => {
+        const msg: Msg = JSON.parse(message)
 
-		switch (msg.method) {
-			case Methods.connect: controller.connect(ws, msg)
-				break
-			case Methods.draw: controller.draw(msg)
-				break
-			case Methods.sendBoards: controller.sendBoards()
-				break
-			default:
-				break
-		}
-	})
+        switch (msg.method) {
+            case Methods.connect: controller.connect(ws, msg)
+                break
+            case Methods.draw: controller.draw(msg)
+                break
+            case Methods.sendBoards: controller.sendBoards()
+                break
+            default:
+                break
+        }
+    })
 })
 
 app.listen(PORT, () => { console.log(`Server start, port: ${PORT}`) })
