@@ -4,8 +4,9 @@ import {
 } from 'entities/Tool';
 import { canvasState } from 'widgets/Canvas';
 import { Button } from 'shared/ui/Button';
-import { BsFillBrushFill } from 'react-icons/bs';
+import { BsFillBrushFill, BsFillEraserFill } from 'react-icons/bs';
 import { BiSolidRectangle } from 'react-icons/bi';
+import { Eraser } from 'entities/Tool/lib/Eraser';
 import cls from './Toolbar.module.scss';
 
 interface ToolbarProps {
@@ -29,6 +30,11 @@ export const Toolbar: FC<ToolbarProps> = () => {
                     onClick={() => setTool(Brush)}
                 >
                     <BsFillBrushFill />
+                </Button>
+                <Button
+                    onClick={() => setTool(Eraser)}
+                >
+                    <BsFillEraserFill />
                 </Button>
                 <Button
                     onClick={() => setTool(Rectangle)}

@@ -17,6 +17,10 @@ export class PaintTool {
 
     protected _isMouseDown: boolean = false;
 
+    protected color: Color | null = null;
+
+    protected lineWidth: number | null = null;
+
     constructor() {
         this.canvas = canvasState.canvas!;
         this.ctx = canvasState.ctx!;
@@ -43,8 +47,8 @@ export class PaintTool {
             method: Methods.draw,
             id: this.id,
             figure: {
-                color: toolState.color,
-                lineWidth: toolState.lineWidth,
+                color: this.color || toolState.color,
+                lineWidth: this.lineWidth || toolState.lineWidth,
                 ...this.generateExtraParams(e),
             },
         });
@@ -55,7 +59,11 @@ export class PaintTool {
     }
 
     initToolParams() {
-        PaintTool.initToolParams(this.ctx!, toolState.color, toolState.lineWidth);
+        PaintTool.initToolParams(
+			this.ctx!,
+			this.color || toolState.color,
+			this.lineWidth || toolState.lineWidth,
+        );
         this.ctx?.beginPath();
     }
 
