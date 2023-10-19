@@ -4,6 +4,8 @@ import {
 } from 'entities/Tool';
 import { canvasState } from 'widgets/Canvas';
 import { Button } from 'shared/ui/Button';
+import { BsFillBrushFill } from 'react-icons/bs';
+import { BiSolidRectangle } from 'react-icons/bi';
 import cls from './Toolbar.module.scss';
 
 interface ToolbarProps {
@@ -26,16 +28,19 @@ export const Toolbar: FC<ToolbarProps> = () => {
 
     return (
         <div className={`bar ${cls.Toolbar}`}>
-            <Button
-                onClick={() => setTool(Brush)}
-            >
-                Brush
-            </Button>
-            <Button
-                onClick={() => setTool(Rectangle)}
-            >
-                Rectangle
-            </Button>
+            <div className={cls.paint}>
+                <Button
+                    onClick={() => setTool(Brush)}
+                >
+                    <BsFillBrushFill />
+                </Button>
+                <Button
+                    onClick={() => setTool(Rectangle)}
+                >
+                    <BiSolidRectangle />
+                </Button>
+            </div>
+
         </div>
     );
 };

@@ -1,3 +1,14 @@
 .Settingbar {
     height: var(--settingbar-height);
+    justify-content: flex-start;
+    gap: 5px;
+
+    input {
+        height: 100%;
+        width: 130px;
+    }
+}
+
+.color {
+    padding: 0;
 }

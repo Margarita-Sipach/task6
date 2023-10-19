@@ -18,7 +18,7 @@ export const Button = (props: ButtonProps) => {
         <button
             type="button"
             onClick={onClick}
-            className={`${cls.button} ${cls[theme]}`}
+            className={`${cls.Button} ${cls[theme]}`}
         >
             {children}
         </button>
