@@ -52,6 +52,10 @@ class CanvasState {
         this._boards = boards;
     }
 
+    setBoard(id: string, img: string) {
+        this._boards[id] = img;
+    }
+
     get canvasSizes(): TwoElementArr {
         return [this._canvas!.width, this._canvas!.height];
     }

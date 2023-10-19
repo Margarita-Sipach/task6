@@ -1,8 +1,8 @@
 export enum Methods {
 	connect = 'connect',
 	draw = 'draw',
-	getBoards = 'getBoards',
-	setImg = 'setImg'
+	sendBoards = 'sendBoards',
+	sendBoard = 'sendBoard'
 }
 
 export enum ToolTypes {
@@ -13,7 +13,7 @@ export enum ToolTypes {
 
 export type Color = string | CanvasGradient | CanvasPattern;
 
-export interface FigureParams{
+export interface FigureParams {
 	color: Color;
 	lineWidth: number
 	coordinates: {

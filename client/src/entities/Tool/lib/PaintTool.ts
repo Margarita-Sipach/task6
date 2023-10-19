@@ -72,7 +72,11 @@ export class PaintTool {
     }
 
     getCanvasURL() {
-        return { img: this.canvas.toDataURL().replace(DATA_IMG_STR, '') };
+        return this.canvas.toDataURL().replace(DATA_IMG_STR, '');
+    }
+
+    static getCanvasURL(canvas: any) {
+        return canvas.toDataURL().replace(DATA_IMG_STR, '');
     }
 
     static initToolParams(

@@ -4,6 +4,7 @@ import { FigureParams, Methods, ToolTypes } from 'shared/ws/ws';
 import {
     Brush, PaintTool, Rectangle, toolState,
 } from 'entities/Tool';
+import { DATA_IMG_STR } from 'shared/const/image';
 import canvasState from '../model/state/canvasState';
 import cls from './Canvas.module.scss';
 
@@ -48,6 +49,7 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
         ws.onopen = () => {
             ws.send(JSON.stringify({
                 id,
+                img: PaintTool.getCanvasURL(canvas),
                 method: Methods.connect,
             }));
             ws.onmessage = (msg) => {
@@ -57,8 +59,9 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
                     break;
                 case Methods.draw: drawHandler(msgParams);
                     break;
-                case Methods.setImg: {
-                    canvasState.setCanvasImg(msgParams.img);
+                case Methods.sendBoards: {
+                    const img = DATA_IMG_STR + msgParams.boards[id];
+                    canvasState.setCanvasImg(img);
                 }
                     break;
                 default: break;
