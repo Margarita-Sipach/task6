@@ -27,4 +27,6 @@
 
 .title {
     font: var(--font-l);
+    position: relative;
+    z-index: 2;
 }

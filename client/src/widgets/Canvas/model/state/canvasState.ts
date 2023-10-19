@@ -1,7 +1,9 @@
 import { makeAutoObservable } from 'mobx';
+import { DATA_IMG_STR } from 'shared/const/image';
 import { TwoElementArr } from 'shared/ws/ws';
 
 export type CanvasType = null | HTMLCanvasElement
+const CONTEXT_ID = '2d';
 
 class CanvasState {
     private _canvas: CanvasType = null;
@@ -21,7 +23,7 @@ class CanvasState {
     }
 
     get ctx() {
-        return this._canvas?.getContext('2d');
+        return this._canvas?.getContext(CONTEXT_ID);
     }
 
     get ws() {
@@ -34,6 +36,10 @@ class CanvasState {
 
     get boards() {
         return this._boards;
+    }
+
+    get canvasSizes(): TwoElementArr {
+        return [this._canvas!.width, this._canvas!.height];
     }
 
     setWs(ws: WebSocket) {
@@ -56,10 +62,6 @@ class CanvasState {
         this._boards[id] = img;
     }
 
-    get canvasSizes(): TwoElementArr {
-        return [this._canvas!.width, this._canvas!.height];
-    }
-
     setCanvasImg(src: string, fn?: (ctx: any) => void) {
         const img = new Image();
         img.src = src;
@@ -70,6 +72,10 @@ class CanvasState {
                 fn?.(this.ctx);
             }
         };
+    }
+
+    get canvasURL() {
+        return this.canvas?.toDataURL().replace(DATA_IMG_STR, '');
     }
 }
 

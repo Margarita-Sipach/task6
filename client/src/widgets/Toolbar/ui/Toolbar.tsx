@@ -14,11 +14,7 @@ interface ToolbarProps {
 export const Toolbar: FC<ToolbarProps> = () => {
     const setTool = (NewTool: typeof PaintTool) => {
         if (canvasState.canvas) {
-            toolState.setTool(new NewTool(
-                canvasState.canvas,
-                canvasState.ws,
-                canvasState.sessionId,
-            ));
+            toolState.setTool(new NewTool());
         }
     };
 

@@ -1,8 +1,10 @@
-import { FC, useEffect, useRef } from 'react';
+import {
+    FC, useCallback, useEffect, useRef,
+} from 'react';
 import { observer } from 'mobx-react-lite';
 import { FigureParams, Methods, ToolTypes } from 'shared/ws/ws';
 import {
-    Brush, PaintTool, Rectangle, toolState,
+    Brush, Rectangle,
 } from 'entities/Tool';
 import { DATA_IMG_STR } from 'shared/const/image';
 import canvasState from '../model/state/canvasState';
@@ -28,47 +30,50 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
         if (canvasState.ctx) {
             const { type, ...figureParams }: Figure = params.figure;
             switch (type) {
-            case ToolTypes.finish: canvasState.ctx.beginPath();
-                break;
-            default: (Tools[type] as typeof PaintTool)
-                .draw(canvasState.ctx, figureParams);
-                break;
+            case ToolTypes.finish: return canvasState.ctx.beginPath();
+            default: return Tools[type].draw(canvasState.ctx, figureParams);
             }
         }
     };
 
-    useEffect(() => {
+    const connectHandler = useCallback(() => alert('new user'), []);
+
+    const sendBoardsHandler = useCallback(({ boards }: any) => {
+        const img = DATA_IMG_STR + boards[id];
+        canvasState.setCanvasImg(img);
+    }, [id]);
+
+    const msgHandler = useCallback((msg: { data: string; }) => {
+        const { method, ...msgParams } = JSON.parse(msg.data);
+        switch (method) {
+        case Methods.connect: return connectHandler();
+        case Methods.draw: return drawHandler(msgParams);
+        case Methods.sendBoards: return sendBoardsHandler(msgParams);
+        default:
+        }
+    }, [connectHandler, sendBoardsHandler]);
+
+    const canvasHandler = useCallback(() => {
         const canvas = canvasRef.current;
         if (canvas) {
             canvasState.setCanvas(canvas);
         }
-
         canvasState.setSessionId(id);
+    }, [id]);
+
+    useEffect(() => {
+        canvasHandler();
 
         const ws = new WebSocket(__WS__);
         ws.onopen = () => {
             ws.send(JSON.stringify({
                 id,
-                img: PaintTool.getCanvasURL(canvas),
+                img: canvasState.canvasURL,
                 method: Methods.connect,
             }));
-            ws.onmessage = (msg) => {
-                const { method, ...msgParams } = JSON.parse(msg.data);
-                switch (method) {
-                case Methods.connect: alert('new user');
-                    break;
-                case Methods.draw: drawHandler(msgParams);
-                    break;
-                case Methods.sendBoards: {
-                    const img = DATA_IMG_STR + msgParams.boards[id];
-                    canvasState.setCanvasImg(img);
-                }
-                    break;
-                default: break;
-                }
-            };
+            ws.onmessage = msgHandler;
         };
-    }, [id]);
+    }, [id, canvasHandler, msgHandler]);
 
     return (
         <div className={cls.Canvas}>

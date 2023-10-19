@@ -1,10 +1,8 @@
 import {
     Color, Methods, ToolTypes, TwoElementArr,
 } from 'shared/ws/ws';
-
-const CONTEXT_ID = '2d';
-const DEFAULT_COLOR = '#000';
-const DEFAULT_LINE_WIDTH = 1;
+import { canvasState } from 'widgets/Canvas';
+import { toolState } from '..';
 
 const DATA_IMG_STR = 'data:image/png;base64,';
 
@@ -17,23 +15,13 @@ export class PaintTool {
 
     protected id: string;
 
-    static color: Color;
-
-    static lineWidth: number;
-
     protected _isMouseDown: boolean = false;
 
-    constructor(
-        canvas: HTMLCanvasElement,
-        ws: WebSocket,
-        id: string,
-    ) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext(CONTEXT_ID)!;
-        PaintTool.color = this.ctx?.fillStyle || DEFAULT_COLOR;
-        PaintTool.lineWidth = this.ctx?.lineWidth || DEFAULT_LINE_WIDTH;
-        this.ws = ws;
-        this.id = id;
+    constructor() {
+        this.canvas = canvasState.canvas!;
+        this.ctx = canvasState.ctx!;
+        this.ws = canvasState.ws;
+        this.id = canvasState.sessionId;
         this.removeListners();
         this.addListners();
     }
@@ -44,22 +32,22 @@ export class PaintTool {
         this.canvas.onmousemove = this.mouseMoveHandler.bind(this);
     }
 
-    mouseUpHandler(e?: MouseEvent) {}
+    mouseUpHandler(e?: MouseEvent) { }
 
-    mouseDownHandler(e?: MouseEvent) {}
+    mouseDownHandler(e?: MouseEvent) { }
 
-    mouseMoveHandler(e?: MouseEvent) {}
+    mouseMoveHandler(e?: MouseEvent) { }
 
     sendDrawMessage(e: MouseEvent) {
-        this.ws.send(JSON.stringify({
+        this.sendMessage({
             method: Methods.draw,
             id: this.id,
             figure: {
-                color: PaintTool.color,
-                lineWidth: PaintTool.lineWidth,
+                color: toolState.color,
+                lineWidth: toolState.lineWidth,
                 ...this.generateExtraParams(e),
             },
-        }));
+        });
     }
 
     generateExtraParams(e?: MouseEvent) {
@@ -67,16 +55,8 @@ export class PaintTool {
     }
 
     initToolParams() {
-        PaintTool.initToolParams(this.ctx!, PaintTool.color, PaintTool.lineWidth);
+        PaintTool.initToolParams(this.ctx!, toolState.color, toolState.lineWidth);
         this.ctx?.beginPath();
-    }
-
-    getCanvasURL() {
-        return this.canvas.toDataURL().replace(DATA_IMG_STR, '');
-    }
-
-    static getCanvasURL(canvas: any) {
-        return canvas.toDataURL().replace(DATA_IMG_STR, '');
     }
 
     static initToolParams(
@@ -104,15 +84,19 @@ export class PaintTool {
     }
 
     finishDraw() {
-        this.ws.send(JSON.stringify({
+        this.sendMessage({
             method: Methods.draw,
             id: this.id,
             img: this.canvas.toDataURL().replace(DATA_IMG_STR, ''),
             figure: {
                 type: ToolTypes.finish,
             },
-        }));
+        });
     }
 
-    static draw(ctx: CanvasRenderingContext2D, params: object) {}
+    sendMessage(obj: any) {
+        this.ws.send(JSON.stringify(obj));
+    }
+
+    static draw(ctx: CanvasRenderingContext2D, params: object) { }
 }
