@@ -62,7 +62,7 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
 
     useEffect(() => {
         canvasHandler();
-		canvasState.updateURL()
+        canvasState.updateURL();
 
         const ws = new WebSocket(__WS__);
         ws.onopen = () => {
@@ -75,9 +75,11 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
         };
     }, [id, canvasHandler, msgHandler]);
 
+    const { width } = window.screen;
+
     return (
         <div className={cls.Canvas}>
-            <canvas width={1000} height={700} ref={canvasRef} />
+            <canvas width={1300} height={900} ref={canvasRef} />
         </div>
     );
 });

@@ -8,4 +8,5 @@ export const Screen = observer(() => (
         src={canvasState.url}
         alt="mini board"
     />
+
 ));

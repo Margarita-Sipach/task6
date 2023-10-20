@@ -6,14 +6,15 @@ import { canvasState } from 'widgets/Canvas';
 import { Button } from 'shared/ui/Button';
 import { BsFillBrushFill, BsFillEraserFill } from 'react-icons/bs';
 import { BiSolidRectangle } from 'react-icons/bi';
-import { AiFillSave } from 'react-icons/ai';
+import { AiFillSave, AiOutlineFundProjectionScreen } from 'react-icons/ai';
 import { Eraser } from 'entities/Tool/lib/Eraser';
 import cls from './Toolbar.module.scss';
 
 interface ToolbarProps {
+	onScreenBtnClick: () => void
 }
 
-export const Toolbar: FC<ToolbarProps> = () => {
+export const Toolbar: FC<ToolbarProps> = ({ onScreenBtnClick }) => {
     const setTool = (NewTool: typeof PaintTool) => {
         if (canvasState.canvas) {
             toolState.setTool(new NewTool());
@@ -54,11 +55,18 @@ export const Toolbar: FC<ToolbarProps> = () => {
                     <BiSolidRectangle />
                 </Button>
             </div>
-            <Button
-                onClick={save}
-            >
-                <AiFillSave />
-            </Button>
+            <div>
+                <Button
+                    onClick={save}
+                >
+                    <AiFillSave />
+                </Button>
+                <Button
+                    onClick={onScreenBtnClick}
+                >
+                    <AiOutlineFundProjectionScreen />
+                </Button>
+            </div>
         </div>
     );
 };

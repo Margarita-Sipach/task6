@@ -5,6 +5,10 @@
         display: flex;
         gap: 15px;
     }
+
+    &:last-child {
+        justify-content: flex-end;
+    }
 }
 
 button {

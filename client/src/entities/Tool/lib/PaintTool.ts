@@ -84,10 +84,9 @@ export class PaintTool {
     }
 
     getCurrentCoordinates(e: MouseEvent): { x: number, y: number } {
-        const target = e.target as HTMLElement;
         return {
-            x: e.pageX - target.offsetLeft,
-            y: e.pageY - target.offsetTop,
+            x: e.offsetX,
+            y: e.offsetY,
         };
     }
 

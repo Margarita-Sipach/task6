@@ -4,7 +4,7 @@
     bottom: 10px;
     height: 100px;
     width: 170px;
-    object-fit: cover;
+    object-fit: contain;
     z-index: 3;
     background: var(--light-color);
 }
