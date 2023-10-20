@@ -8,6 +8,12 @@ const IMG_EXTENSION = '.jpg'
 class Image {
     folderPath = path.resolve(__dirname, '..', FOLDER_NAME)
 
+	constructor(){
+		if (!fs.existsSync(this.folderPath)) {
+			fs.mkdirSync(this.folderPath);
+		}
+	}
+
     getBoards () {
         return fs.readdirSync(this.folderPath)
             .reduce((boards, name) => {
