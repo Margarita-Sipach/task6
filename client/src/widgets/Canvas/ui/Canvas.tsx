@@ -79,7 +79,7 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
 
     return (
         <div className={cls.Canvas}>
-            <canvas width={1300} height={900} ref={canvasRef} />
+            <canvas width={1250} height={800} ref={canvasRef} />
         </div>
     );
 });
