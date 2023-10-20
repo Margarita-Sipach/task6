@@ -6,6 +6,7 @@ import { canvasState } from 'widgets/Canvas';
 import { Button } from 'shared/ui/Button';
 import { BsFillBrushFill, BsFillEraserFill } from 'react-icons/bs';
 import { BiSolidRectangle } from 'react-icons/bi';
+import { AiFillSave } from 'react-icons/ai';
 import { Eraser } from 'entities/Tool/lib/Eraser';
 import cls from './Toolbar.module.scss';
 
@@ -22,6 +23,17 @@ export const Toolbar: FC<ToolbarProps> = () => {
     useEffect(() => {
         setTool(Brush);
     }, []);
+
+    const save = () => {
+        const IMG_EXTENSION = '.jpg';
+        const { url } = canvasState;
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = canvasState.sessionId + IMG_EXTENSION;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
 
     return (
         <div className={`bar ${cls.Toolbar}`}>
@@ -42,7 +54,11 @@ export const Toolbar: FC<ToolbarProps> = () => {
                     <BiSolidRectangle />
                 </Button>
             </div>
-
+            <Button
+                onClick={save}
+            >
+                <AiFillSave />
+            </Button>
         </div>
     );
 };

@@ -1,5 +1,4 @@
 import { makeAutoObservable } from 'mobx';
-import { DATA_IMG_STR } from 'shared/const/image';
 import { TwoElementArr } from 'shared/ws/ws';
 
 export type CanvasType = null | HTMLCanvasElement

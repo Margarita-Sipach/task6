@@ -62,6 +62,7 @@ export const Canvas: FC<CanvasProps> = observer(({ id }) => {
 
     useEffect(() => {
         canvasHandler();
+		canvasState.updateURL()
 
         const ws = new WebSocket(__WS__);
         ws.onopen = () => {

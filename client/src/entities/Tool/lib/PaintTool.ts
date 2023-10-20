@@ -26,11 +26,11 @@ export class PaintTool {
         this.ctx = canvasState.ctx!;
         this.ws = canvasState.ws;
         this.id = canvasState.sessionId;
-        this.removeListners();
-        this.addListners();
+        this.removeListeners();
+        this.addListeners();
     }
 
-    addListners() {
+    addListeners() {
         this.canvas.onmouseup = this.mouseUpHandler.bind(this);
         this.canvas.onmousedown = this.mouseDownHandler.bind(this);
         this.canvas.onmousemove = this.mouseMoveHandler.bind(this);
@@ -77,7 +77,7 @@ export class PaintTool {
 		ctx!.lineWidth = lineWidth;
     }
 
-    removeListners() {
+    removeListeners() {
         this.canvas.onmouseup = null;
         this.canvas.onmousedown = null;
         this.canvas.onmousemove = null;
