@@ -26,6 +26,7 @@ export class PaintTool {
         this.ctx = canvasState.ctx!;
         this.ws = canvasState.ws;
         this.id = canvasState.sessionId;
+		this.ctx.globalCompositeOperation = "source-over"
         this.removeListeners();
         this.addListeners();
     }

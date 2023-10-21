@@ -6,5 +6,6 @@ export class Eraser extends Brush {
     constructor() {
         super();
         this.color = ERASER_COLOR;
+		this.ctx.globalCompositeOperation = 'destination-out'
     }
 }
